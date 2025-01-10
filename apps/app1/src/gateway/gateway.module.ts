@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 
+import { LoggerModule } from '@app/logger';
+import { PaymentModule } from '@components/payment';
+
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { LoggerModule } from '@app/logger';
 
 @Module({
-  imports: [LoggerModule],
+  imports: [LoggerModule, PaymentModule],
   controllers: [GatewayController],
   providers: [GatewayService],
 })
-export class GatewayModule { }
+export class GatewayModule {}

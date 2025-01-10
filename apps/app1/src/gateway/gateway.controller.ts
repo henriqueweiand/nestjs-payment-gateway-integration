@@ -4,10 +4,10 @@ import { GatewayService } from './gateway.service';
 
 @Controller()
 export class GatewayController {
-  constructor(private readonly gatewayService: GatewayService) { }
+  constructor(private readonly gatewayService: GatewayService) {}
 
-  @Get('countries')
-  getCountries() {
-    // return this.gatewayService.getCountries();
+  @Get('pay')
+  pay() {
+    return this.gatewayService.pay();
   }
 }

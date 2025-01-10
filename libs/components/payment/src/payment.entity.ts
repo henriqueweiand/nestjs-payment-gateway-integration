@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, DeepPartial, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { PaymentLog } from './payment-log/payment-log.entity';
-import { PaymentStatus } from './payment_status.enum';
+import { PaymentStatus } from './enums/payment_status.enum';
 
 @Entity()
 export class Payment {
@@ -24,7 +24,7 @@ export class Payment {
   })
   amount: number;
 
-  @Column({ type: 'enum', name: 'payment_status', enum: PaymentStatus, default: PaymentStatus.INITIALIZED })
+  @Column({ type: 'enum', name: 'payment_status', enum: PaymentStatus })
   status: PaymentStatus;
 
   @Column('jsonb', { name: 'payment_request', nullable: true })
