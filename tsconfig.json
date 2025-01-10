@@ -16,6 +16,32 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@libs/persistence": [
+        "libs/persistence/src"
+      ],
+      "@libs/persistence/*": [
+        "libs/persistence/src/*"
+      ],
+      "@libs/env": [
+        "libs/env/src"
+      ],
+      "@libs/env/*": [
+        "libs/env/src/*"
+      ],
+      "@components/payment": [
+        "libs/components/payment/src"
+      ],
+      "@components/payment/*": [
+        "libs/components/payment/src/*"
+      ],
+      "@app/logger": [
+        "libs/logger/src"
+      ],
+      "@app/logger/*": [
+        "libs/logger/src/*"
+      ],
+    }
   }
 }
