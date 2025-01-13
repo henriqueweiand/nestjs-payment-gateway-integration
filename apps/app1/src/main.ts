@@ -10,6 +10,8 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
+  app.enableCors(); // Enable CORS for all origins
+
   const configService = app.get(ConfigService);
   const port = configService.getOrThrow('PORT');
 

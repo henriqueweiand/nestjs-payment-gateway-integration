@@ -17,19 +17,8 @@ export class GatewayService {
     this.logger = this.loggerService.getLogger(GatewayService.name);
   }
 
-  async pay() {
-    const response = await this.paymentService.processPayments({
-      amount: 100,
-      currency: 'USD',
-      payments: [
-        {
-          paymentType: PaymentType.CARD,
-          processorType: PaymentProcessorType.CARD_STRIPE,
-          amount: 100,
-          currency: 'USD',
-        } as StripePaymentInput,
-      ],
-    });
+  async pay(payment: any) {
+    const response = await this.paymentService.processPayments(payment);
 
     return response;
   }
