@@ -1,6 +1,0 @@
-export enum PaymentLogStatus {
-    PENDING = 'PENDING',
-    INITIATED = 'INITIATED',
-    COMPLETED_SUCCESSFULLY = 'COMPLETED_SUCCESSFULLY',
-    FAILED = 'FAILED',
-}

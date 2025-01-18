@@ -12,7 +12,7 @@ export class PersistenceModule {
     return {
       module: PersistenceModule,
       imports: [
-        ...databases.map((name) =>
+        ...databases.map(name =>
           NestTypeOrmModule.forRootAsync({
             imports: [TypeOrmModule],
             inject: [TypeOrmFactory],

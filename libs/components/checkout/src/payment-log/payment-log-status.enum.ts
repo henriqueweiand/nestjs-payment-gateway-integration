@@ -1,0 +1,5 @@
+export enum PaymentLogStatus {
+  PENDING = 'PENDING',
+  COMPLETED_SUCCESSFULLY = 'COMPLETED_SUCCESSFULLY',
+  FAILED = 'FAILED',
+}

@@ -88,7 +88,7 @@
     ],
     "moduleNameMapper": {
       "^@app/persistence(|/.*)$": "<rootDir>/libs/persistence/src/$1",
-      "^@components/payment(|/.*)$": "<rootDir>/libs/components/payment/src/$1",
+      "^@components/checkout(|/.*)$": "<rootDir>/libs/components/payment/src/$1",
       "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
       "^@app/env(|/.*)$": "<rootDir>/libs/env/src/$1"
     }

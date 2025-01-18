@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Logger, LoggerService } from '@app/logger';
-import { PaymentService } from '@components/payment/payment.service';
-import { PaymentType } from '@components/payment/enums/payment_type.enum';
-import { PaymentProcessorType } from '@components/payment/payment-processors/payment_processor_type.enum';
-import { StripePaymentInput } from '@components/payment/stripe/dto/stripe_payment.input';
+import { CheckoutService } from '@components/checkout/checkout.service';
 
 @Injectable()
 export class GatewayService {
@@ -12,13 +9,13 @@ export class GatewayService {
 
   constructor(
     private readonly loggerService: LoggerService,
-    private readonly paymentService: PaymentService,
+    private readonly checkoutService: CheckoutService,
   ) {
     this.logger = this.loggerService.getLogger(GatewayService.name);
   }
 
   async pay(payment: any) {
-    const response = await this.paymentService.processPayments(payment);
+    const response = await this.checkoutService.processPayments(payment);
 
     return response;
   }

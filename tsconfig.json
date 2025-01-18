@@ -30,11 +30,11 @@
       "@libs/env/*": [
         "libs/env/src/*"
       ],
-      "@components/payment": [
-        "libs/components/payment/src"
+      "@components/checkout": [
+        "libs/components/checkout/src"
       ],
-      "@components/payment/*": [
-        "libs/components/payment/src/*"
+      "@components/checkout/*": [
+        "libs/components/checkout/src/*"
       ],
       "@app/logger": [
         "libs/logger/src"

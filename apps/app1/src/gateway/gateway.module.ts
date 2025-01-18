@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 
 import { LoggerModule } from '@app/logger';
-import { PaymentModule } from '@components/payment';
+import { CheckoutModule } from 'libs/components/checkout/src';
 
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 
 @Module({
-  imports: [LoggerModule, PaymentModule],
+  imports: [LoggerModule, CheckoutModule],
   controllers: [GatewayController],
   providers: [GatewayService],
 })
