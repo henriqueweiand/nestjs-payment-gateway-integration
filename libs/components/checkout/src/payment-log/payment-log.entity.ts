@@ -26,6 +26,9 @@ export class PaymentLog {
   @Column('jsonb', { name: 'payment_response', nullable: true })
   result?: PaymentResult;
 
+  @Column('jsonb', { name: 'refund_response', nullable: true })
+  refundResult?: string;
+
   @Column({ type: 'enum', name: 'payment_status', enum: PaymentLogStatus })
   status: PaymentLogStatus;
 

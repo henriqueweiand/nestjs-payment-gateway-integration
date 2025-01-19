@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@app/logger';
@@ -7,8 +8,9 @@ import { PaymentLogService } from 'libs/components/checkout/src/payment-log/paym
 
 import { StripeService } from 'libs/components/checkout/src/stripe/stripe.service';
 import { PaymentProcessorType } from '../payment-processor-type.enum';
-import { PaymentTransactionResult } from '../payment-processor.interfaces';
+import { PaymentTransactionFailedResult, PaymentTransactionResult } from '../payment-processor.interfaces';
 import { PaymentProcessor } from './payment.processor';
+import { PaymentLog } from '@components/checkout/payment-log/payment-log.entity';
 
 @Injectable()
 export class CustomVoucherPaymentProcessor extends PaymentProcessor {
@@ -24,24 +26,16 @@ export class CustomVoucherPaymentProcessor extends PaymentProcessor {
   }
 
   protected async _pay(): Promise<PaymentTransactionResult> {
-    try {
-      // This is a fake implementation for the sake of the example
-      // In a real-world scenario, this would be a call to the voucher service
+    return {
+      result: {
+        message: 'Payment completed successfully',
+      },
+    };
+  }
 
-      return {
-        status: PaymentLogStatus.COMPLETED_SUCCESSFULLY,
-        result: {
-          transaction: 'voucher-transaction-id',
-          message: 'Payment completed successfully',
-        },
-      };
-    } catch (err) {
-      return {
-        status: PaymentLogStatus.FAILED,
-        result: {
-          message: err.message,
-        },
-      };
-    }
+  protected async _refund(paymentLog: PaymentLog): Promise<PaymentTransactionFailedResult> {
+    return {
+      message: 'Payment refunded successfully',
+    };
   }
 }

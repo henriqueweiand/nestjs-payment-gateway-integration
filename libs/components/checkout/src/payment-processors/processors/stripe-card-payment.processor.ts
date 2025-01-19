@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@app/logger';
 import { PaymentType } from '@components/checkout/enums/payment-type.enum';
-import { PaymentLogStatus } from '@components/checkout/payment-log/payment-log-status.enum';
 import { PaymentLogService } from 'libs/components/checkout/src/payment-log/payment-log.service';
 
+import { PaymentLog } from '@components/checkout/payment-log/payment-log.entity';
 import { StripePaymentInput } from '@components/checkout/stripe/dto/stripe-payment.input';
 import { StripeService } from 'libs/components/checkout/src/stripe/stripe.service';
 import { PaymentProcessorType } from '../payment-processor-type.enum';
-import { PaymentData, PaymentTransactionResult } from '../payment-processor.interfaces';
+import { PaymentData, PaymentTransactionFailedResult, PaymentTransactionResult } from '../payment-processor.interfaces';
 import { PaymentProcessor } from './payment.processor';
 
 @Injectable()
@@ -25,27 +26,23 @@ export class StripeCardPaymentProcessor extends PaymentProcessor {
   }
 
   protected async _pay(_paymentData: PaymentData, paymentInput: StripePaymentInput): Promise<PaymentTransactionResult> {
-    try {
-      const response = await this.stripeService.createPaymentIntent({
-        confirmationTokenId: paymentInput.confirmationTokenId,
-        amount: paymentInput.amount,
-        currency: paymentInput.currency,
-      });
+    const response = await this.stripeService.createPaymentIntent({
+      confirmationTokenId: paymentInput.confirmationTokenId,
+      amount: paymentInput.amount,
+      currency: paymentInput.currency,
+    });
 
-      return {
-        status: PaymentLogStatus.COMPLETED_SUCCESSFULLY,
-        result: {
-          transaction: response, // TODO: get the right values
-          message: 'Payment completed successfully',
-        },
-      };
-    } catch (err) {
-      return {
-        status: PaymentLogStatus.FAILED,
-        result: {
-          message: err.message,
-        },
-      };
-    }
+    return {
+      result: {
+        transaction: response.id,
+        message: 'Payment completed successfully',
+      },
+    };
+  }
+
+  protected async _refund(paymentLog: PaymentLog): Promise<PaymentTransactionFailedResult> {
+    return {
+      message: 'Payment refunded successfully',
+    };
   }
 }

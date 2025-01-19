@@ -7,7 +7,7 @@ import { PaymentLogStatus } from '@components/checkout/payment-log/payment-log-s
 import { PaymentLog } from '../../payment-log/payment-log.entity';
 import { PaymentLogService } from '../../payment-log/payment-log.service';
 import { PaymentProcessorType } from '../payment-processor-type.enum';
-import { PaymentData, PaymentInput, PaymentTransactionResult } from '../payment-processor.interfaces';
+import { PaymentData, PaymentInput, PaymentTransactionFailedResult, PaymentTransactionResult } from '../payment-processor.interfaces';
 
 @Injectable()
 export abstract class PaymentProcessor<Input extends PaymentInput = PaymentInput> {
@@ -40,12 +40,12 @@ export abstract class PaymentProcessor<Input extends PaymentInput = PaymentInput
 
   private async _payAndUpdateLog(paymentLog: PaymentLog, paymentData: PaymentData): Promise<PaymentLog> {
     try {
-      const { status, result } = await this._pay(paymentData, paymentLog.input as Input);
+      const { result } = await this._pay(paymentData, paymentLog.input as Input);
 
       return this.paymentLogService.update(paymentLog, {
-        status,
-        result,
+        status: PaymentLogStatus.COMPLETED_SUCCESSFULLY,
         processedDate: new Date(),
+        result,
       });
     } catch (err) {
       const result = err instanceof Error ? err.message : err;
@@ -53,6 +53,27 @@ export abstract class PaymentProcessor<Input extends PaymentInput = PaymentInput
         status: PaymentLogStatus.FAILED,
         processedDate: new Date(),
         result,
+      });
+    }
+  }
+
+  protected abstract _refund(paymentLog: PaymentLog): Promise<PaymentTransactionFailedResult>;
+
+  async refund(paymentLog: PaymentLog): Promise<PaymentLog> {
+    try {
+      const { message } = await this._refund(paymentLog);
+
+      return await this.paymentLogService.update(paymentLog, {
+        status: PaymentLogStatus.REFUNDED,
+        refundResult: message,
+      });
+    } catch (err) {
+      const result = err instanceof Error ? err.message : err;
+      this.logger.error(`Error refunding payment ${paymentLog.id}`, result);
+
+      return await this.paymentLogService.update(paymentLog, {
+        status: PaymentLogStatus.FAILED_REFUND,
+        refundResult: result,
       });
     }
   }

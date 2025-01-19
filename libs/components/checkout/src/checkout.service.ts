@@ -9,6 +9,8 @@ import { ProcessPaymentsInput } from './checkout.interfaces';
 import { SpecificPaymentInputs } from './dtos/combined_payment.input';
 import { PaymentStatus } from './enums/payment-status.enum';
 import { PaymentProcessorsService } from './payment-processors/payment-processors.service';
+import { PaymentLog } from './payment-log/payment-log.entity';
+import { PaymentLogStatus } from './payment-log/payment-log-status.enum';
 
 @Injectable()
 export class CheckoutService {
@@ -35,19 +37,49 @@ export class CheckoutService {
 
     const checkout = await this._createCheckout(paymentData);
 
-    try {
-      const paymentResults = await Promise.all(paymentInputs.map(paymentInput => this._processOnePayment(checkout, paymentInput)));
-      checkout.status = PaymentStatus.COMPLETED;
-      await this.checkoutRepository.save(checkout);
+    const results = await Promise.all(paymentInputs.map(paymentInput => this._processOnePayment(checkout, paymentInput)));
+    const failedPayments = results.filter(payment => payment.status === PaymentLogStatus.FAILED);
+    const successfulPayment = results.filter(payment => payment.status === PaymentLogStatus.COMPLETED_SUCCESSFULLY);
 
-      return paymentResults;
-    } catch (error) {
-      this.logger.error('Error processing payments', error);
+    if (failedPayments.length > 0) {
       checkout.status = PaymentStatus.FAILED_PAYMENT;
       await this.checkoutRepository.save(checkout);
+      await this._processRefundForSuccessfulPayments(checkout, successfulPayment);
 
-      throw error;
+      this.logger.error('one or more payments failed');
+      throw new Error('One or more payments failed');
     }
+
+    checkout.status = PaymentStatus.COMPLETED;
+    await this.checkoutRepository.save(checkout);
+
+    return checkout;
+  }
+
+  private async _processRefundForSuccessfulPayments(checkout: Checkout, successfulPayments: PaymentLog[]) {
+    const results = await Promise.all(successfulPayments.map(payment => this._processOneRefund(payment)));
+    const failedPayments = results.filter(payment => payment.status === PaymentLogStatus.FAILED);
+
+    if (failedPayments.length > 0) {
+      checkout.status = PaymentStatus.FAILED_REFUND;
+      await this.checkoutRepository.save(checkout);
+
+      this.logger.error('Error requesting refund for one or more payments');
+      throw new Error('Error requesting refund for one or more payments');
+    }
+
+    checkout.status = PaymentStatus.REFUNDED;
+    await this.checkoutRepository.save(checkout);
+  }
+
+  private async _processOneRefund(paymentLog: PaymentLog): Promise<PaymentLog> {
+    const {
+      input: { processorType, paymentType },
+    } = paymentLog;
+
+    const paymentProcessor = this.paymentProcessorsService.getProcessor(paymentType, processorType);
+
+    return await paymentProcessor.refund(paymentLog);
   }
 
   private async _processOnePayment(payment: Checkout, paymentInput: SpecificPaymentInputs) {
