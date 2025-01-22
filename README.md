@@ -2,6 +2,8 @@
 
 This project is a NestJS-based payment gateway integration service. It provides a unified interface for processing payments through various payment processors such as Stripe, PayPal, and others. The service handles payment initialization, processing, and refunding, ensuring a seamless payment experience for users.
 
+Frontend project: https://github.com/henriqueweiand/nextjs-payment-gateway-integration
+
 ### Features
 
 - Support for multiple payment processors
