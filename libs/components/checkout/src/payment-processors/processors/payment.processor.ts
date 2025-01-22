@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
 import { Logger, LoggerService } from '@app/logger';
-import { PaymentType } from '@components/checkout/enums/payment-type.enum';
 import { PaymentLogStatus } from '@components/checkout/payment-log/payment-log-status.enum';
 
 import { PaymentLog } from '../../payment-log/payment-log.entity';
 import { PaymentLogService } from '../../payment-log/payment-log.service';
-import { PaymentProcessorType } from '../payment-processor-type.enum';
 import { PaymentData, PaymentInput, PaymentTransactionFailedResult, PaymentTransactionResult } from '../payment-processor.interfaces';
 
 @Injectable()
 export abstract class PaymentProcessor<Input extends PaymentInput = PaymentInput> {
   protected readonly logger: Logger;
-  protected abstract paymentType: PaymentType | null;
-  protected abstract processorType: PaymentProcessorType;
 
   protected constructor(
     protected readonly loggerService: LoggerService,
@@ -30,7 +26,7 @@ export abstract class PaymentProcessor<Input extends PaymentInput = PaymentInput
       paymentType: paymentData.type,
       input: paymentInput,
       status: PaymentLogStatus.PENDING,
-      checkoutId: paymentData.paymentId,
+      checkoutId: paymentData.checkoutId,
     });
 
     const paymentLog = await this.paymentLogService.create(paymentLogData);

@@ -82,15 +82,15 @@ export class CheckoutService {
     return await paymentProcessor.refund(paymentLog);
   }
 
-  private async _processOnePayment(payment: Checkout, paymentInput: SpecificPaymentInputs) {
+  private async _processOnePayment(checkout: Checkout, paymentInput: SpecificPaymentInputs) {
     const { paymentType, processorType } = paymentInput;
 
     const paymentProcessor = this.paymentProcessorsService.getProcessor(paymentType, processorType);
 
     const paymentData = {
       type: paymentType,
-      paymentId: payment.id,
-      amount: payment.amount,
+      checkoutId: checkout.id,
+      amount: checkout.amount,
     };
 
     const paymentLog = await paymentProcessor.pay(paymentData, paymentInput);

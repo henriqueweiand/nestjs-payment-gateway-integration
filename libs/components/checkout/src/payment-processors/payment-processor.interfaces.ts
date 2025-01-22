@@ -8,7 +8,7 @@ export type PaymentInput = StripePaymentInput | CustomVoucherPaymentInput; // Ad
 
 export interface PaymentData {
   type: PaymentType;
-  paymentId: string;
+  checkoutId: string;
   amount: number;
 }
 

@@ -2,21 +2,15 @@
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@app/logger';
-import { PaymentType } from '@components/checkout/enums/payment-type.enum';
-import { PaymentLogStatus } from '@components/checkout/payment-log/payment-log-status.enum';
 import { PaymentLogService } from 'libs/components/checkout/src/payment-log/payment-log.service';
 
+import { PaymentLog } from '@components/checkout/payment-log/payment-log.entity';
 import { StripeService } from 'libs/components/checkout/src/stripe/stripe.service';
-import { PaymentProcessorType } from '../payment-processor-type.enum';
 import { PaymentTransactionFailedResult, PaymentTransactionResult } from '../payment-processor.interfaces';
 import { PaymentProcessor } from './payment.processor';
-import { PaymentLog } from '@components/checkout/payment-log/payment-log.entity';
 
 @Injectable()
 export class CustomVoucherPaymentProcessor extends PaymentProcessor {
-  protected paymentType: PaymentType = PaymentType.VOUCHER;
-  protected processorType = PaymentProcessorType.CUSTOM_VOUCHER;
-
   constructor(
     protected readonly loggerService: LoggerService,
     protected readonly paymentLogService: PaymentLogService,
