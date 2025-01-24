@@ -21,3 +21,5 @@ Article: https://medium.com/nestjs-ninja/how-to-integrate-multiple-payment-gatew
 3. Run docker-compose, `docker-compose up -d`;
 4. Run migrations `yarn typeorm:run`;
 5. Run project `yarn start:dev`.
+
+![Preview](https://raw.githubusercontent.com/henriqueweiand/nestjs-payment-gateway-integration/master/assets/preview.png)
